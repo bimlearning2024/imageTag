@@ -5,9 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Multi-Layer Overlayer (Auto-Save)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Updated Google Fonts Import with requested Sinhala Fonts -->
+    <!-- Google Fonts Import -->
     <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;700&family=Bebas+Neue&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Gemunu+Libre:wght@400;700&family=Inter:wght@400;900&family=JetBrains+Mono&family=Lobster&family=Maname&family=Montserrat:wght@900&family=Noto+Sans+Sinhala:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto+Condensed:wght@700&family=Spicy+Rice&family=Stick+No+Bills:wght@400;700&family=Yaldevi:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* UN-Series Sinhala Unicode Fonts */
+        @font-face { font-family: 'UN-Abhaya'; src: url('https://font.akasa.lk/fonts/UN-Abhaya.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Alakamanda'; src: url('https://font.akasa.lk/fonts/UN-Alakamanda.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Arundathee'; src: url('https://font.akasa.lk/fonts/UN-Arundathee.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Basuru'; src: url('https://font.akasa.lk/fonts/UN-Basuru.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Bindumathi'; src: url('https://font.akasa.lk/fonts/UN-Bindumathi.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Davasa'; src: url('https://font.akasa.lk/fonts/UN-Davasa.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Derana'; src: url('https://font.akasa.lk/fonts/UN-Derana.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Dharanee'; src: url('https://font.akasa.lk/fonts/UN-Dharanee.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Disapamok'; src: url('https://font.akasa.lk/fonts/UN-Disapamok.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Ganganee'; src: url('https://font.akasa.lk/fonts/UN-Ganganee.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Gemunu'; src: url('https://font.akasa.lk/fonts/UN-Gemunu.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Gurulugomi'; src: url('https://font.akasa.lk/fonts/UN-Gurulugomi.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Imanee'; src: url('https://font.akasa.lk/fonts/UN-Imanee.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Indeewaree'; src: url('https://font.akasa.lk/fonts/UN-Indeewaree.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Isiwara'; src: url('https://font.akasa.lk/fonts/UN-Isiwara.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Malithi-4'; src: url('https://font.akasa.lk/fonts/UN-Malithi-4.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Rajantha'; src: url('https://font.akasa.lk/fonts/UN-Rajantha.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Rashmi'; src: url('https://font.akasa.lk/fonts/UN-Rashmi.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Samantha'; src: url('https://font.akasa.lk/fonts/UN-Samantha.ttf') format('truetype'); font-display: swap; }
+        @font-face { font-family: 'UN-Sandhyanee'; src: url('https://font.akasa.lk/fonts/UN-Sandhyanee.ttf') format('truetype'); font-display: swap; }
+
         .canvas-container {
             border: 2px dashed #cbd5e1;
             border-radius: 0.75rem;
@@ -151,7 +173,27 @@
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 mb-1">FONT FAMILY</label>
                         <select id="editFont" class="w-full p-2 border border-slate-200 rounded text-sm outline-none">
-                            <optgroup label="Sinhala (සිංහල)">
+                            <optgroup label="Sinhala (Unicode)">
+                                <option value="'UN-Abhaya', sans-serif">UN-Abhaya</option>
+                                <option value="'UN-Alakamanda', sans-serif">UN-Alakamanda</option>
+                                <option value="'UN-Arundathee', sans-serif">UN-Arundathee</option>
+                                <option value="'UN-Basuru', sans-serif">UN-Basuru</option>
+                                <option value="'UN-Bindumathi', sans-serif">UN-Bindumathi</option>
+                                <option value="'UN-Davasa', sans-serif">UN-Davasa</option>
+                                <option value="'UN-Derana', sans-serif">UN-Derana</option>
+                                <option value="'UN-Dharanee', sans-serif">UN-Dharanee</option>
+                                <option value="'UN-Disapamok', sans-serif">UN-Disapamok</option>
+                                <option value="'UN-Ganganee', sans-serif">UN-Ganganee</option>
+                                <option value="'UN-Gemunu', sans-serif">UN-Gemunu</option>
+                                <option value="'UN-Gurulugomi', sans-serif">UN-Gurulugomi</option>
+                                <option value="'UN-Imanee', sans-serif">UN-Imanee</option>
+                                <option value="'UN-Indeewaree', sans-serif">UN-Indeewaree</option>
+                                <option value="'UN-Isiwara', sans-serif">UN-Isiwara</option>
+                                <option value="'UN-Malithi-4', sans-serif">UN-Malithi-4</option>
+                                <option value="'UN-Rajantha', sans-serif">UN-Rajantha</option>
+                                <option value="'UN-Rashmi', sans-serif">UN-Rashmi</option>
+                                <option value="'UN-Samantha', sans-serif">UN-Samantha</option>
+                                <option value="'UN-Sandhyanee', sans-serif">UN-Sandhyanee</option>
                                 <option value="'Noto Sans Sinhala', sans-serif">Noto Sans Sinhala</option>
                                 <option value="'Abhaya Libre', serif">Abhaya Libre</option>
                                 <option value="'Gemunu Libre', sans-serif">Gemunu Libre</option>
@@ -180,11 +222,11 @@
                     <div class="flex flex-col gap-2">
                         <div class="flex justify-between items-end">
                             <label class="block text-[10px] font-bold text-slate-400">FONT SIZE</label>
-                            <span id="fontSizeDisplay" class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">10</span>
+                            <span id="fontSizeDisplay" class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">50</span>
                         </div>
                         <div class="flex gap-4 items-center">
                             <div class="flex-grow">
-                                <input type="range" id="editSize" min="1" max="150" value="10" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                                <input type="range" id="editSize" min="1" max="25" step="0.25" value="12" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
                             </div>
                             <div>
                                 <input type="color" id="editColor" class="w-8 h-8 rounded cursor-pointer border-none bg-transparent">
@@ -199,8 +241,13 @@
     <script>
         const DB_NAME = 'OverlayDesignerDB';
         const STORE_NAME = 'pages';
-        const DEFAULT_FONT_SIZE = 10;
-        const DEFAULT_COLOR = '#0000C8'; // RGB(0, 0, 200)
+        const DEFAULT_FONT_SIZE = 12;
+        const DEFAULT_COLOR = '#0000C8'; 
+
+        function getStepDisplayValue(val) {
+            const display = Math.round(((val - 1) / (25 - 1)) * 99 + 1);
+            return display;
+        }
 
         function openDB() {
             return new Promise((resolve, reject) => {
@@ -335,7 +382,7 @@
                             image: img,
                             dataUrl: e.target.result,
                             caption: file.name.split('.')[0] || `Page ${pages.length + 1}`,
-                            layers: [createLayer('New Text', img.width / 2, img.height / 2)]
+                            layers: [createLayer('සිංහලෙන් ලියන්න', img.width / 2, img.height / 2)]
                         };
                         pages.push(newPage);
                         renderThumbs();
@@ -355,7 +402,7 @@
                 x: x, y: y,
                 size: DEFAULT_FONT_SIZE,
                 color: DEFAULT_COLOR,
-                font: "'Noto Sans Sinhala', sans-serif",
+                font: "'UN-Isiwara', sans-serif",
                 align: 'left',
                 width: 0, height: 0
             };
@@ -411,9 +458,13 @@
             const layer = pages[currentIndex].layers[activeLayerIndex];
             document.getElementById('editContent').value = layer.text;
             document.getElementById('editFont').value = layer.font;
-            document.getElementById('editSize').value = layer.size;
+            
+            const sizeInput = document.getElementById('editSize');
+            const safeSize = Math.max(1, Math.min(25, layer.size));
+            sizeInput.value = safeSize;
+            
             document.getElementById('editColor').value = layer.color;
-            fontSizeDisplay.textContent = layer.size;
+            fontSizeDisplay.textContent = getStepDisplayValue(safeSize);
         }
 
         function deleteLayer(e, idx) {
@@ -445,8 +496,8 @@
                 if (id === 'editContent') layer.text = val;
                 if (id === 'editFont') layer.font = val;
                 if (id === 'editSize') {
-                    layer.size = parseInt(val);
-                    fontSizeDisplay.textContent = val;
+                    layer.size = parseFloat(val);
+                    fontSizeDisplay.textContent = getStepDisplayValue(layer.size);
                 }
                 if (id === 'editColor') layer.color = val;
                 if (id === 'editContent') renderLayersList();
@@ -462,8 +513,9 @@
             ctx.drawImage(page.image, 0, 0);
 
             page.layers.forEach((layer, idx) => {
-                const scale = canvas.width / 1000;
-                const fontSize = layer.size * scale * 5;
+                const visualScale = 10; 
+                const fontSize = layer.size * visualScale;
+                
                 ctx.font = `bold ${fontSize}px ${layer.font}`;
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
@@ -474,7 +526,7 @@
 
                 if (idx === activeLayerIndex) {
                     ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)';
-                    ctx.lineWidth = 2 * scale;
+                    ctx.lineWidth = Math.max(2, fontSize * 0.05);
                     ctx.strokeRect(layer.x - 10, layer.y - (layer.height/2) - 10, layer.width + 20, layer.height + 20);
                 }
                 
@@ -499,16 +551,12 @@
             const page = pages[currentIndex];
             for (let i = page.layers.length - 1; i >= 0; i--) {
                 const l = page.layers[i];
-                // Hitbox detection
                 if (pos.x >= l.x - 20 && pos.x <= l.x + l.width + 20 &&
                     pos.y >= l.y - l.height/2 - 20 && pos.y <= l.y + l.height/2 + 20) {
                     draggingLayerIndex = i;
                     activeLayerIndex = i;
-                    
-                    // Capture offset to prevent "jump" on drag start
                     dragOffsetX = pos.x - l.x;
                     dragOffsetY = pos.y - l.y;
-                    
                     renderLayersList();
                     updateEditorUI();
                     draw();
@@ -520,7 +568,6 @@
         function handleMove(e) {
             if (draggingLayerIndex !== -1 && currentIndex !== -1) {
                 const pos = getMousePos(e);
-                // Apply original click offset to keep movement relative to cursor
                 pages[currentIndex].layers[draggingLayerIndex].x = pos.x - dragOffsetX;
                 pages[currentIndex].layers[draggingLayerIndex].y = pos.y - dragOffsetY;
                 draw();
