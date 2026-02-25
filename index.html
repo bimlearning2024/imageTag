@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Multi-Layer Overlayer (Auto-Save)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Updated Google Fonts Import with requested Sinhala Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;700&family=Bebas+Neue&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Gemunu+Libre:wght@400;700&family=Inter:wght@400;900&family=JetBrains+Mono&family=Lobster&family=Maname&family=Montserrat:wght@900&family=Noto+Sans+Sinhala:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto+Condensed:wght@700&family=Spicy+Rice&family=Stick+No+Bills:wght@400;700&family=Yaldevi:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .canvas-container {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            min-height: 500px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            cursor: move;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        .layer-card {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: white;
+            transition: all 0.2s;
+        }
+        .layer-card.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .image-item {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 80px;
+        }
+        .image-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .image-thumb.active {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+        .thumb-caption {
+            font-size: 10px;
+            color: #64748b;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .thumb-list::-webkit-scrollbar { height: 4px; }
+        .thumb-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+
+    <div id="loadingOverlay">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="mt-4 font-medium text-slate-600">මෘදුකාංගය සූදානම් වෙමින් පවතී...</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+        <header class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Overlay Designer</h1>
+                <p class="text-slate-500 text-sm">Everything is automatically saved to your browser.</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="downloadBtn" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-700">Download JPG</button>
+                <button id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-500">Share JPG</button>
+            </div>
+        </header>
+
+        <div class="mb-6 bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
+            <label class="cursor-pointer bg-blue-50 text-blue-700 px-4 py-3 rounded-lg font-semibold text-sm hover:bg-blue-100 whitespace-nowrap text-center">
+                + Add Images
+                <input type="file" id="imageInput" accept="image/*" multiple class="hidden" />
+            </label>
+            <div id="thumbList" class="thumb-list flex gap-4 overflow-x-auto pb-1 flex-grow items-start min-h-[90px]">
+                <p id="noImagesMsg" class="text-xs text-slate-400 italic pt-6">No images uploaded.</p>
+            </div>
+            <button id="clearAllBtn" class="text-xs text-slate-400 hover:text-red-500 whitespace-nowrap">Clear All</button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-3 space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3 mb-4">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Image Caption</label>
+                    <input type="text" id="pageCaption" placeholder="Name this page..." class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-1 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-xs text-slate-500 uppercase tracking-widest">Text Layers</h3>
+                    <button id="addLayerBtn" class="text-blue-600 font-bold text-xs hover:underline">+ New Box</button>
+                </div>
+                
+                <div id="layersContainer" class="space-y-3 overflow-y-auto max-h-[50vh] pr-1"></div>
+
+                <button id="removePageBtn" class="w-full py-2 text-xs text-red-400 hover:text-red-600 border border-red-100 rounded-lg transition-colors">
+                    Delete Current Image
+                </button>
+            </div>
+
+            <div class="lg:col-span-6">
+                <div id="canvasContainer" class="canvas-container shadow-inner border-2 rounded-xl bg-slate-200/50 overflow-hidden">
+                    <p id="placeholderText" class="text-slate-400 text-center px-4">Upload images to start.</p>
+                    <canvas id="canvas" class="hidden"></canvas>
+                </div>
+            </div>
+
+            <div id="styleEditor" class="lg:col-span-3 bg-white p-4 rounded-xl shadow-sm border border-slate-200 h-fit space-y-4 sticky top-4 hidden">
+                <h3 class="font-bold text-xs text-slate-500 uppercase tracking-widest">Edit Selected Box</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">TEXT CONTENT</label>
+                        <textarea id="editContent" rows="2" placeholder="සිංහලෙන් ලියන්න..." class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">FONT FAMILY</label>
+                        <select id="editFont" class="w-full p-2 border border-slate-200 rounded text-sm outline-none">
+                            <optgroup label="Sinhala (සිංහල)">
+                                <option value="'Noto Sans Sinhala', sans-serif">Noto Sans Sinhala</option>
+                                <option value="'Abhaya Libre', serif">Abhaya Libre</option>
+                                <option value="'Gemunu Libre', sans-serif">Gemunu Libre</option>
+                                <option value="'Maname', serif">Maname</option>
+                                <option value="'Yaldevi', sans-serif">Yaldevi</option>
+                                <option value="'Stick No Bills', sans-serif">Stick No Bills</option>
+                            </optgroup>
+                            <optgroup label="Modern Sans">
+                                <option value="'Inter', sans-serif">Inter</option>
+                                <option value="'Montserrat', sans-serif">Montserrat Black</option>
+                                <option value="'Roboto Condensed', sans-serif">Roboto Condensed</option>
+                            </optgroup>
+                            <optgroup label="Display & Bold">
+                                <option value="'Bebas Neue', cursive">Bebas Neue</option>
+                                <option value="'Impact', sans-serif">Impact</option>
+                                <option value="'Spicy Rice', cursive">Spicy Rice</option>
+                            </optgroup>
+                            <optgroup label="Decorative">
+                                <option value="'Dancing Script', cursive">Dancing Script</option>
+                                <option value="'Caveat', cursive">Caveat</option>
+                                <option value="'Lobster', cursive">Lobster</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-end">
+                            <label class="block text-[10px] font-bold text-slate-400">FONT SIZE</label>
+                            <span id="fontSizeDisplay" class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">10</span>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <div class="flex-grow">
+                                <input type="range" id="editSize" min="1" max="150" value="10" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                            </div>
+                            <div>
+                                <input type="color" id="editColor" class="w-8 h-8 rounded cursor-pointer border-none bg-transparent">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DB_NAME = 'OverlayDesignerDB';
+        const STORE_NAME = 'pages';
+        const DEFAULT_FONT_SIZE = 10;
+        const DEFAULT_COLOR = '#0000C8'; // RGB(0, 0, 200)
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function savePagesToDB(pagesArray) {
+            try {
+                const db = await openDB();
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const clearReq = store.clear();
+                
+                clearReq.onsuccess = () => {
+                    pagesArray.forEach(p => {
+                        store.add({
+                            dataUrl: p.dataUrl,
+                            caption: p.caption,
+                            layers: p.layers
+                        });
+                    });
+                };
+            } catch (err) {
+                console.error("DB Save Error:", err);
+            }
+        }
+
+        async function loadPagesFromDB() {
+            try {
+                const db = await openDB();
+                return new Promise((resolve) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => resolve([]);
+                });
+            } catch (err) {
+                return [];
+            }
+        }
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const imageInput = document.getElementById('imageInput');
+        const layersContainer = document.getElementById('layersContainer');
+        const styleEditor = document.getElementById('styleEditor');
+        const thumbList = document.getElementById('thumbList');
+        const pageCaptionInput = document.getElementById('pageCaption');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+        
+        let pages = []; 
+        let currentIndex = -1;
+        let activeLayerIndex = -1; 
+        let draggingLayerIndex = -1;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let saveTimeout;
+
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => savePagesToDB(pages), 1000);
+        }
+
+        function hideOverlay() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        async function init() {
+            const safetyTimer = setTimeout(hideOverlay, 3000);
+            try {
+                const savedData = await loadPagesFromDB();
+                if (savedData && savedData.length > 0) {
+                    const loadedPages = [];
+                    for (const item of savedData) {
+                        try {
+                            const img = await loadImage(item.dataUrl);
+                            loadedPages.push({
+                                image: img,
+                                dataUrl: item.dataUrl,
+                                caption: item.caption,
+                                layers: item.layers.map(l => ({
+                                    ...l,
+                                    align: 'left',
+                                    color: l.color || DEFAULT_COLOR
+                                }))
+                            });
+                        } catch (e) {
+                            console.warn("Skipping image");
+                        }
+                    }
+                    pages = loadedPages;
+                    if (pages.length > 0) switchPage(0);
+                    else renderThumbs();
+                } else {
+                    renderThumbs();
+                }
+            } catch (err) {
+                console.error("Init error", err);
+            } finally {
+                clearTimeout(safetyTimer);
+                hideOverlay();
+            }
+        }
+
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject();
+                img.src = src;
+            });
+        }
+
+        function addImages(files) {
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const img = await loadImage(e.target.result);
+                        const newPage = {
+                            image: img,
+                            dataUrl: e.target.result,
+                            caption: file.name.split('.')[0] || `Page ${pages.length + 1}`,
+                            layers: [createLayer('New Text', img.width / 2, img.height / 2)]
+                        };
+                        pages.push(newPage);
+                        renderThumbs();
+                        if (currentIndex === -1) switchPage(0);
+                        autoSave();
+                    } catch (err) {
+                        console.error("Processing error", err);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function createLayer(text, x, y) {
+            return {
+                text: text,
+                x: x, y: y,
+                size: DEFAULT_FONT_SIZE,
+                color: DEFAULT_COLOR,
+                font: "'Noto Sans Sinhala', sans-serif",
+                align: 'left',
+                width: 0, height: 0
+            };
+        }
+
+        function switchPage(index) {
+            if (index < 0 || index >= pages.length) return;
+            currentIndex = index;
+            activeLayerIndex = pages[currentIndex].layers.length > 0 ? 0 : -1;
+            const page = pages[currentIndex];
+            canvas.width = page.image.width;
+            canvas.height = page.image.height;
+            pageCaptionInput.value = page.caption || "";
+            canvas.classList.remove('hidden');
+            document.getElementById('placeholderText').classList.add('hidden');
+            renderThumbs();
+            renderLayersList();
+            updateEditorUI();
+            draw();
+        }
+
+        function renderLayersList() {
+            layersContainer.innerHTML = '';
+            if (currentIndex === -1) return;
+            pages[currentIndex].layers.forEach((layer, idx) => {
+                const card = document.createElement('div');
+                card.className = `layer-card flex items-center gap-3 cursor-pointer ${idx === activeLayerIndex ? 'active' : ''}`;
+                card.onclick = () => {
+                    activeLayerIndex = idx;
+                    renderLayersList();
+                    updateEditorUI();
+                    draw();
+                };
+                card.innerHTML = `
+                    <div class="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">${idx + 1}</div>
+                    <div class="flex-grow overflow-hidden">
+                        <div class="text-[11px] font-bold truncate">${layer.text || 'No Text'}</div>
+                    </div>
+                    <button onclick="deleteLayer(event, ${idx})" class="text-slate-300 hover:text-red-500 p-1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                `;
+                layersContainer.appendChild(card);
+            });
+        }
+
+        function updateEditorUI() {
+            if (currentIndex === -1 || activeLayerIndex === -1) {
+                styleEditor.classList.add('hidden');
+                return;
+            }
+            styleEditor.classList.remove('hidden');
+            const layer = pages[currentIndex].layers[activeLayerIndex];
+            document.getElementById('editContent').value = layer.text;
+            document.getElementById('editFont').value = layer.font;
+            document.getElementById('editSize').value = layer.size;
+            document.getElementById('editColor').value = layer.color;
+            fontSizeDisplay.textContent = layer.size;
+        }
+
+        function deleteLayer(e, idx) {
+            e.stopPropagation();
+            pages[currentIndex].layers.splice(idx, 1);
+            activeLayerIndex = pages[currentIndex].layers.length > 0 ? 0 : -1;
+            renderLayersList();
+            updateEditorUI();
+            draw();
+            autoSave();
+        }
+
+        document.getElementById('addLayerBtn').onclick = () => {
+            if (currentIndex === -1) return;
+            const page = pages[currentIndex];
+            page.layers.push(createLayer('New Text', canvas.width / 2, canvas.height / 2));
+            activeLayerIndex = page.layers.length - 1;
+            renderLayersList();
+            updateEditorUI();
+            draw();
+            autoSave();
+        };
+
+        ['editContent', 'editFont', 'editSize', 'editColor'].forEach(id => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                if (currentIndex === -1 || activeLayerIndex === -1) return;
+                const layer = pages[currentIndex].layers[activeLayerIndex];
+                const val = e.target.value;
+                if (id === 'editContent') layer.text = val;
+                if (id === 'editFont') layer.font = val;
+                if (id === 'editSize') {
+                    layer.size = parseInt(val);
+                    fontSizeDisplay.textContent = val;
+                }
+                if (id === 'editColor') layer.color = val;
+                if (id === 'editContent') renderLayersList();
+                draw();
+                autoSave();
+            });
+        });
+
+        function draw() {
+            if (currentIndex === -1) return;
+            const page = pages[currentIndex];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(page.image, 0, 0);
+
+            page.layers.forEach((layer, idx) => {
+                const scale = canvas.width / 1000;
+                const fontSize = layer.size * scale * 5;
+                ctx.font = `bold ${fontSize}px ${layer.font}`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                
+                const metrics = ctx.measureText(layer.text);
+                layer.width = metrics.width;
+                layer.height = fontSize;
+
+                if (idx === activeLayerIndex) {
+                    ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)';
+                    ctx.lineWidth = 2 * scale;
+                    ctx.strokeRect(layer.x - 10, layer.y - (layer.height/2) - 10, layer.width + 20, layer.height + 20);
+                }
+                
+                ctx.fillStyle = layer.color || DEFAULT_COLOR;
+                ctx.fillText(layer.text, layer.x, layer.y);
+            });
+        }
+
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clientX = (evt.clientX || (evt.touches && evt.touches[0].clientX)) || 0;
+            const clientY = (evt.clientY || (evt.touches && evt.touches[0].clientY)) || 0;
+            return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+        }
+
+        function handleStart(e) {
+            if (currentIndex === -1) return;
+            const pos = getMousePos(e);
+            draggingLayerIndex = -1;
+            const page = pages[currentIndex];
+            for (let i = page.layers.length - 1; i >= 0; i--) {
+                const l = page.layers[i];
+                // Hitbox detection
+                if (pos.x >= l.x - 20 && pos.x <= l.x + l.width + 20 &&
+                    pos.y >= l.y - l.height/2 - 20 && pos.y <= l.y + l.height/2 + 20) {
+                    draggingLayerIndex = i;
+                    activeLayerIndex = i;
+                    
+                    // Capture offset to prevent "jump" on drag start
+                    dragOffsetX = pos.x - l.x;
+                    dragOffsetY = pos.y - l.y;
+                    
+                    renderLayersList();
+                    updateEditorUI();
+                    draw();
+                    break;
+                }
+            }
+        }
+
+        function handleMove(e) {
+            if (draggingLayerIndex !== -1 && currentIndex !== -1) {
+                const pos = getMousePos(e);
+                // Apply original click offset to keep movement relative to cursor
+                pages[currentIndex].layers[draggingLayerIndex].x = pos.x - dragOffsetX;
+                pages[currentIndex].layers[draggingLayerIndex].y = pos.y - dragOffsetY;
+                draw();
+            }
+        }
+
+        function handleEnd() {
+            if (draggingLayerIndex !== -1) autoSave();
+            draggingLayerIndex = -1;
+        }
+
+        canvas.addEventListener('mousedown', handleStart);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
+        canvas.addEventListener('touchend', handleEnd);
+
+        function renderThumbs() {
+            thumbList.innerHTML = '';
+            if (pages.length === 0) {
+                thumbList.innerHTML = '<p class="text-xs text-slate-400 italic pt-6">No Image.</p>';
+                return;
+            }
+            pages.forEach((page, idx) => {
+                const container = document.createElement('div');
+                container.className = 'image-item';
+                const img = document.createElement('img');
+                img.src = page.dataUrl;
+                img.className = `image-thumb ${idx === currentIndex ? 'active' : ''}`;
+                img.onclick = () => switchPage(idx);
+                const caption = document.createElement('span');
+                caption.className = 'thumb-caption';
+                caption.textContent = page.caption || `Page ${idx+1}`;
+                container.appendChild(img);
+                container.appendChild(caption);
+                thumbList.appendChild(container);
+            });
+        }
+
+        imageInput.addEventListener('change', (e) => addImages(e.target.files));
+
+        document.getElementById('removePageBtn').onclick = () => {
+            if (currentIndex === -1) return;
+            pages.splice(currentIndex, 1);
+            if (pages.length === 0) {
+                currentIndex = -1;
+                pageCaptionInput.value = "";
+                canvas.classList.add('hidden');
+                document.getElementById('placeholderText').classList.remove('hidden');
+            } else {
+                currentIndex = Math.max(0, currentIndex - 1);
+                switchPage(currentIndex);
+            }
+            renderThumbs();
+            autoSave();
+        };
+
+        document.getElementById('clearAllBtn').onclick = () => {
+            if (confirm('සියල්ල මකන්නද?')) {
+                pages = [];
+                currentIndex = -1;
+                renderThumbs();
+                canvas.classList.add('hidden');
+                document.getElementById('placeholderText').classList.remove('hidden');
+                savePagesToDB([]);
+            }
+        };
+
+        document.getElementById('downloadBtn').onclick = () => {
+            if (currentIndex === -1) return;
+            const oldIdx = activeLayerIndex;
+            activeLayerIndex = -1;
+            draw();
+            const link = document.createElement('a');
+            const safeName = (pages[currentIndex].caption || 'image').replace(/[^a-z0-9]/gi, '_');
+            link.download = `${safeName}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+            activeLayerIndex = oldIdx;
+            draw();
+        };
+
+        document.getElementById('shareBtn').onclick = async () => {
+            if (currentIndex === -1) return;
+            const oldIdx = activeLayerIndex;
+            activeLayerIndex = -1;
+            draw();
+            try {
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.9));
+                const safeName = (pages[currentIndex].caption || 'image').replace(/[^a-z0-9]/gi, '_') + '.jpg';
+                const file = new File([blob], safeName, { type: 'image/jpeg' });
+                if (navigator.share) await navigator.share({ files: [file] });
+            } catch (err) { console.error("Share failed", err); }
+            activeLayerIndex = oldIdx;
+            draw();
+        };
+
+        window.onload = init;
+    </script>
+</body>
+</html>
