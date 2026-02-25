@@ -6,29 +6,20 @@
     <title>Dynamic Multi-Layer Overlayer (Auto-Save)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Import -->
-    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;700&family=Bebas+Neue&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Gemunu+Libre:wght@400;700&family=Inter:wght@400;900&family=JetBrains+Mono&family=Lobster&family=Maname&family=Montserrat:wght@900&family=Noto+Sans+Sinhala:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto+Condensed:wght@700&family=Spicy+Rice&family=Stick+No+Bills:wght@400;700&family=Yaldevi:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;700&family=Bebas+Neue&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Gemunu+Libre:wght@400;700&family=Inter:wght@400;900&family=JetBrains+Mono&family=Lobster&family=Maname&family=Montserrat:wght@900&family=Noto+Sans+Sinhala:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Roboto+Condensed:wght@700&family=Spicy+Rice&family=Yaldevi:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* UN-Series Sinhala Unicode Fonts */
         @font-face { font-family: 'UN-Abhaya'; src: url('https://font.akasa.lk/fonts/UN-Abhaya.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Alakamanda'; src: url('https://font.akasa.lk/fonts/UN-Alakamanda.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Arundathee'; src: url('https://font.akasa.lk/fonts/UN-Arundathee.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Basuru'; src: url('https://font.akasa.lk/fonts/UN-Basuru.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Bindumathi'; src: url('https://font.akasa.lk/fonts/UN-Bindumathi.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Davasa'; src: url('https://font.akasa.lk/fonts/UN-Davasa.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Derana'; src: url('https://font.akasa.lk/fonts/UN-Derana.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Dharanee'; src: url('https://font.akasa.lk/fonts/UN-Dharanee.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Disapamok'; src: url('https://font.akasa.lk/fonts/UN-Disapamok.ttf') format('truetype'); font-display: swap; }
+        
+        /* New Requested Fonts */
         @font-face { font-family: 'UN-Ganganee'; src: url('https://font.akasa.lk/fonts/UN-Ganganee.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Gemunu'; src: url('https://font.akasa.lk/fonts/UN-Gemunu.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Gurulugomi'; src: url('https://font.akasa.lk/fonts/UN-Gurulugomi.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Imanee'; src: url('https://font.akasa.lk/fonts/UN-Imanee.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Indeewaree'; src: url('https://font.akasa.lk/fonts/UN-Indeewaree.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Isiwara'; src: url('https://font.akasa.lk/fonts/UN-Isiwara.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Malithi-4'; src: url('https://font.akasa.lk/fonts/UN-Malithi-4.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Rajantha'; src: url('https://font.akasa.lk/fonts/UN-Rajantha.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Rashmi'; src: url('https://font.akasa.lk/fonts/UN-Rashmi.ttf') format('truetype'); font-display: swap; }
         @font-face { font-family: 'UN-Samantha'; src: url('https://font.akasa.lk/fonts/UN-Samantha.ttf') format('truetype'); font-display: swap; }
-        @font-face { font-family: 'UN-Sandhyanee'; src: url('https://font.akasa.lk/fonts/UN-Sandhyanee.ttf') format('truetype'); font-display: swap; }
 
         .canvas-container {
             border: 2px dashed #cbd5e1;
@@ -108,7 +99,7 @@
     <div id="loadingOverlay">
         <div class="text-center">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 font-medium text-slate-600">මෘදුකාංගය සූදානම් වෙමින් පවතී...</p>
+            <p class="mt-4 font-medium text-slate-600">Siddam seiyappadukirathu...</p>
         </div>
     </div>
 
@@ -116,7 +107,7 @@
         <header class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-slate-800">Overlay Designer</h1>
-                <p class="text-slate-500 text-sm">Everything is automatically saved to your browser.</p>
+                <p class="text-slate-500 text-sm">Autosave seiyappadukirathu.</p>
             </div>
             <div class="flex gap-2">
                 <button id="downloadBtn" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-700">Download JPG</button>
@@ -130,7 +121,7 @@
                 <input type="file" id="imageInput" accept="image/*" multiple class="hidden" />
             </label>
             <div id="thumbList" class="thumb-list flex gap-4 overflow-x-auto pb-1 flex-grow items-start min-h-[90px]">
-                <p id="noImagesMsg" class="text-xs text-slate-400 italic pt-6">No images uploaded.</p>
+                <p id="noImagesMsg" class="text-xs text-slate-400 italic pt-6">Nilaikal illai.</p>
             </div>
             <button id="clearAllBtn" class="text-xs text-slate-400 hover:text-red-500 whitespace-nowrap">Clear All</button>
         </div>
@@ -156,7 +147,7 @@
 
             <div class="lg:col-span-6">
                 <div id="canvasContainer" class="canvas-container shadow-inner border-2 rounded-xl bg-slate-200/50 overflow-hidden">
-                    <p id="placeholderText" class="text-slate-400 text-center px-4">Upload images to start.</p>
+                    <p id="placeholderText" class="text-slate-400 text-center px-4">Thodanga padathai etravum.</p>
                     <canvas id="canvas" class="hidden"></canvas>
                 </div>
             </div>
@@ -167,7 +158,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 mb-1">TEXT CONTENT</label>
-                        <textarea id="editContent" rows="2" placeholder="සිංහලෙන් ලියන්න..." class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
+                        <textarea id="editContent" rows="2" placeholder="Ezhuthukal..." class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-1 focus:ring-blue-500 outline-none"></textarea>
                     </div>
 
                     <div>
@@ -175,31 +166,19 @@
                         <select id="editFont" class="w-full p-2 border border-slate-200 rounded text-sm outline-none">
                             <optgroup label="Sinhala (Unicode)">
                                 <option value="'UN-Abhaya', sans-serif">UN-Abhaya</option>
-                                <option value="'UN-Alakamanda', sans-serif">UN-Alakamanda</option>
-                                <option value="'UN-Arundathee', sans-serif">UN-Arundathee</option>
                                 <option value="'UN-Basuru', sans-serif">UN-Basuru</option>
                                 <option value="'UN-Bindumathi', sans-serif">UN-Bindumathi</option>
-                                <option value="'UN-Davasa', sans-serif">UN-Davasa</option>
                                 <option value="'UN-Derana', sans-serif">UN-Derana</option>
-                                <option value="'UN-Dharanee', sans-serif">UN-Dharanee</option>
-                                <option value="'UN-Disapamok', sans-serif">UN-Disapamok</option>
                                 <option value="'UN-Ganganee', sans-serif">UN-Ganganee</option>
                                 <option value="'UN-Gemunu', sans-serif">UN-Gemunu</option>
-                                <option value="'UN-Gurulugomi', sans-serif">UN-Gurulugomi</option>
-                                <option value="'UN-Imanee', sans-serif">UN-Imanee</option>
-                                <option value="'UN-Indeewaree', sans-serif">UN-Indeewaree</option>
                                 <option value="'UN-Isiwara', sans-serif">UN-Isiwara</option>
-                                <option value="'UN-Malithi-4', sans-serif">UN-Malithi-4</option>
                                 <option value="'UN-Rajantha', sans-serif">UN-Rajantha</option>
-                                <option value="'UN-Rashmi', sans-serif">UN-Rashmi</option>
                                 <option value="'UN-Samantha', sans-serif">UN-Samantha</option>
-                                <option value="'UN-Sandhyanee', sans-serif">UN-Sandhyanee</option>
                                 <option value="'Noto Sans Sinhala', sans-serif">Noto Sans Sinhala</option>
                                 <option value="'Abhaya Libre', serif">Abhaya Libre</option>
                                 <option value="'Gemunu Libre', sans-serif">Gemunu Libre</option>
                                 <option value="'Maname', serif">Maname</option>
                                 <option value="'Yaldevi', sans-serif">Yaldevi</option>
-                                <option value="'Stick No Bills', sans-serif">Stick No Bills</option>
                             </optgroup>
                             <optgroup label="Modern Sans">
                                 <option value="'Inter', sans-serif">Inter</option>
@@ -382,7 +361,7 @@
                             image: img,
                             dataUrl: e.target.result,
                             caption: file.name.split('.')[0] || `Page ${pages.length + 1}`,
-                            layers: [createLayer('සිංහලෙන් ලියන්න', img.width / 2, img.height / 2)]
+                            layers: [createLayer('Text', img.width / 2, img.height / 2)]
                         };
                         pages.push(newPage);
                         renderThumbs();
@@ -402,7 +381,7 @@
                 x: x, y: y,
                 size: DEFAULT_FONT_SIZE,
                 color: DEFAULT_COLOR,
-                font: "'UN-Isiwara', sans-serif",
+                font: "'UN-Abhaya', sans-serif",
                 align: 'left',
                 width: 0, height: 0
             };
@@ -439,7 +418,7 @@
                 card.innerHTML = `
                     <div class="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">${idx + 1}</div>
                     <div class="flex-grow overflow-hidden">
-                        <div class="text-[11px] font-bold truncate">${layer.text || 'No Text'}</div>
+                        <div class="text-[11px] font-bold truncate">${layer.text || 'Text illai'}</div>
                     </div>
                     <button onclick="deleteLayer(event, ${idx})" class="text-slate-300 hover:text-red-500 p-1">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -480,7 +459,7 @@
         document.getElementById('addLayerBtn').onclick = () => {
             if (currentIndex === -1) return;
             const page = pages[currentIndex];
-            page.layers.push(createLayer('New Text', canvas.width / 2, canvas.height / 2));
+            page.layers.push(createLayer('Puthiya Box', canvas.width / 2, canvas.height / 2));
             activeLayerIndex = page.layers.length - 1;
             renderLayersList();
             updateEditorUI();
@@ -589,7 +568,7 @@
         function renderThumbs() {
             thumbList.innerHTML = '';
             if (pages.length === 0) {
-                thumbList.innerHTML = '<p class="text-xs text-slate-400 italic pt-6">No Image.</p>';
+                thumbList.innerHTML = '<p class="text-xs text-slate-400 italic pt-6">Nilaikal illai.</p>';
                 return;
             }
             pages.forEach((page, idx) => {
@@ -627,7 +606,7 @@
         };
 
         document.getElementById('clearAllBtn').onclick = () => {
-            if (confirm('සියල්ල මකන්නද?')) {
+            if (confirm('Sutham seiyattuma?')) {
                 pages = [];
                 currentIndex = -1;
                 renderThumbs();
